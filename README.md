@@ -41,11 +41,11 @@ Grabit/
 │── index.html
 │── style.css
 │── script.js
-│── product.htmL
+│── product.html
 │── sucesss.html
 │── checkout.html
 │── cart.html
-│──shop.png(faviconI)
+│──shop.png(favicon)
 
 
 ---
