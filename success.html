@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Placed — Grabit</title>
+  <link rel="icon" type="image/x-icon" href="shop.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand" onclick="window.location.href='index.html'">Grab<span>it</span></div>
+</nav>
+
+<div class="success-container">
+  <div class="success-card">
+    <span class="success-icon">🎉</span>
+    <h1>Order Placed!</h1>
+    <p>Thank you for shopping with Grabit.</p>
+    <p>Your order is confirmed and will be delivered within 3–5 business days.</p>
+    <div class="order-id" id="order-id">ORDER #GRB-000000</div>
+    <button class="btn-primary" onclick="window.location.href='index.html'">
+      Continue Shopping →
+    </button>
+  </div>
+</div>
+
+<script>
+  const id = Math.floor(100000 + Math.random() * 900000);
+  document.getElementById("order-id").textContent = `ORDER #GRB-${id}`;
+</script>
+</body>
+</html>

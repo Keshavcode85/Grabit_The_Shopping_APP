@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product — Grabit</title>
+  <link rel="icon" type="image/x-icon" href="shop.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand" onclick="window.location.href='index.html'">Grab<span>it</span></div>
+  <div class="cart-icon" onclick="goToCart()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    Cart
+    <div class="cart-badge" id="cart-count">0</div>
+  </div>
+</nav>
+
+<p id="loading" style="text-align:center;padding:80px 0;color:#555;letter-spacing:2px;text-transform:uppercase;font-size:0.8rem;">Loading product<span class="loader-dots"></span></p>
+
+<div id="product-details" class="product-detail" style="display:none;"></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+<script>
+  function renderProductDetail(p) {
+    document.getElementById("loading").style.display = "none";
+    const details = document.getElementById("product-details");
+    details.style.display = "grid";
+
+    const inr = Math.round(p.price * 83);
+    const rate = p.rating?.rate || 4;
+    const filled = Math.round(rate);
+    const stars = "★".repeat(filled) + "☆".repeat(5 - filled);
+
+    details.innerHTML = `
+      <div class="detail-img-side">
+        <img src="${p.image}" alt="${p.title}">
+      </div>
+      <div class="detail-info">
+        <div class="detail-category">${p.category}</div>
+        <div class="detail-title">${p.title}</div>
+        <div class="detail-rating">
+          <span class="stars">${stars}</span>
+          <span>${rate} out of 5 &nbsp;·&nbsp; ${p.rating?.count} reviews</span>
+        </div>
+        <div class="detail-price">
+          ₹${inr.toLocaleString("en-IN")}
+          <span>~ $${p.price}</span>
+        </div>
+        <div class="detail-desc">${p.description}</div>
+        <div class="detail-actions">
+          <button class="btn-primary" onclick="addToCart(${p.id}); showToast('Added to cart! 🛒', 'gold')">
+            🛒 &nbsp;Add to Cart
+          </button>
+          <button class="btn-back" onclick="window.history.back()">← Back</button>
+        </div>
+      </div>
+    `;
+
+    document.title = p.title + " — Grabit";
+  }
+
+  function showToast(msg, type) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = "toast" + (type ? " " + type : "");
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+  }
+
+  initProduct();
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart — Grabit</title>
+  <link rel="icon" type="image/x-icon" href="shop.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand" onclick="window.location.href='index.html'">Grab<span>it</span></div>
+  <div class="cart-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    Cart
+    <div class="cart-badge" id="cart-count">0</div>
+  </div>
+</nav>
+
+<div class="page-header" style="text-align:left;padding-left:40px;padding-bottom:0;">
+  <h1>Your <em>Cart</em></h1>
+</div>
+
+<div id="cart-wrapper">
+  <!-- filled by JS -->
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+<script>
+  function renderCart() {
+    const cart = getCart();
+    const wrapper = document.getElementById("cart-wrapper");
+    updateCartCount();
+
+    if (!cart.length) {
+      wrapper.innerHTML = `
+        <div class="empty-cart">
+          <div class="icon">🛒</div>
+          <h2>Your cart is empty</h2>
+          <p>Browse our curated collections and find something you love.</p>
+          <button class="btn-primary" onclick="window.location.href='index.html'">Start Shopping →</button>
+        </div>`;
+      return;
+    }
+
+    let total = 0;
+    let itemsHTML = "";
+
+    cart.forEach((item, i) => {
+      const inr = Math.round(item.price * 83);
+      const lineTotal = inr * (item.qty || 1);
+      total += lineTotal;
+      itemsHTML += `
+        <div class="cart-item" style="animation-delay:${i*0.06}s">
+          <img src="${item.image}" alt="${item.title}" onclick="viewProduct(${item.id})" style="cursor:pointer">
+          <div class="cart-item-info">
+            <div class="cart-item-cat">${item.category}</div>
+            <div class="cart-item-title" onclick="viewProduct(${item.id})" style="cursor:pointer">${item.title}</div>
+            <div class="cart-item-price">₹${lineTotal.toLocaleString("en-IN")}</div>
+          </div>
+          <div class="cart-item-controls">
+            <div class="qty-row">
+              <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+              <span class="qty-num">${item.qty || 1}</span>
+              <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+            </div>
+            <button class="btn-remove" onclick="removeFromCart(${item.id})">Remove</button>
+          </div>
+        </div>
+      `;
+    });
+
+    wrapper.innerHTML = `
+      <div class="cart-layout">
+        <div class="cart-list">${itemsHTML}</div>
+        <div class="cart-sidebar">
+          <h3>Order Summary</h3>
+          <div class="summary-line"><span>${cart.reduce((s,i) => s+(i.qty||1),0)} item(s)</span><span>₹${total.toLocaleString("en-IN")}</span></div>
+          <div class="summary-line"><span>Delivery</span><span style="color:var(--green)">Free</span></div>
+          <div class="summary-line total">
+            <span>Total</span>
+            <span class="price">₹${total.toLocaleString("en-IN")}</span>
+          </div>
+          <div class="free-ship">✓ &nbsp;Free delivery on all orders</div>
+          <button class="btn-primary" style="width:100%;padding:15px;font-size:0.95rem;" onclick="window.location.href='checkout.html'">
+            Proceed to Checkout →
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function changeQty(id, delta) {
+    let cart = getCart();
+    cart = cart.map(item => item.id === id ? { ...item, qty: Math.max(1, (item.qty||1)+delta) } : item);
+    saveCart(cart);
+    renderCart();
+  }
+
+  function removeFromCart(id) {
+    let cart = getCart().filter(i => i.id !== id);
+    saveCart(cart);
+    showToast("Item removed");
+    renderCart();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.className = "toast";
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+  }
+
+  renderCart();
+</script>
+</body>
+</html>
